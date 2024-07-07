@@ -46,10 +46,6 @@ public class Board {
         return this.grid[r][c];
     }
 
-    public void flagCell(int r, int c) {
-        this.grid[r][c].setFlag();
-    }
-
     public void revealAdjacentCells(int r, int c) {
         if (r < 0 || c < 0 || r >= n || c >= n || 
             grid[r][c].isMine() || grid[r][c].isRevealed()) return;
@@ -126,7 +122,7 @@ public class Board {
     public void displayGameState() {
         System.out.print("    ");
         for (int r=0; r<n; r++) System.out.print(r + " ");
-        System.out.println();
+        System.out.println("\n   ------------------");
 
         for (int r=0; r < n; r++) {
             for (int c=0; c < n; c++) {

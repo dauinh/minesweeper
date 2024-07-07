@@ -10,7 +10,7 @@ import java.util.*;
 public class Game {
 
     private Board board;
-    private boolean isEnded;
+    private boolean isEnded = false;
 
     public Game(int size) {
         board = new Board(size);
@@ -23,20 +23,21 @@ public class Game {
     }
 
     /* Main game loop */
-    public void play(int option, int r, int c) {
-        board.displayAdjacentMines();
-
+    public void play(String option, int r, int c) {
         // player reveals cell
-        if (option == 1) {
+        if (option == "1") {
             // mine cell
-            if (board.getCell(r, c).isMine()) isEnded = true;
+            if (board.getCell(r, c).isMine()) {
+                board.getCell(r, c).reveal();
+                isEnded = true;
+            }
             // safe cell
             else board.revealAdjacentCells(r, c);
 
         }
         // player flags cell
-        else {
-            board.flagCell(r, c);
+        else if (option == "2") {
+            board.getCell(r, c).setFlag();
         }
         board.displayGameState();
     }
@@ -49,17 +50,29 @@ public class Game {
         System.out.println("O: uncovered cell; 1-9: safe cell; X: mine\n");
         System.out.println("Enter CTRL + C to exit any time\n");
 
-        
-        game.play(1, 8, 8);
+        System.out.println();
+        game.board.displayGameState();
 
-        // System.out.print("\nEnter coords to reveal mine, e.g. 3 2:");
-        // String move = scannerObj.nextLine();
-        // String[] parts = move.split(" ");
-        // int row = Integer.parseInt(parts[0]);
-        // int col = Integer.parseInt(parts[1]);
+        // game.play("1", 8, 8);
 
-        // game.reveal(row, col);
-        // game.displayGameState();
+        while (!game.isEnded) {
+            // System.out.println("\nChoose following action:\n1. Reveal cell\n2. Flag cell");
+            // String option = scannerObj.nextLine();
+            // option.strip();
+
+            System.out.println("\nEnter cell coords in this format: 0,0");
+            String coords = scannerObj.nextLine();
+            String[] parts = coords.split(",");
+            int row = Integer.parseInt(parts[0]);
+            int col = Integer.parseInt(parts[1]);
+
+            // game.play(option, row, col);
+            game.play("1", row, col);
+            System.out.println("\n-------------------------");
+        }
+
+        System.out.println("\nYou lost!");
+        game.board.displayGameState();
 
         scannerObj.close();
 
