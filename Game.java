@@ -1,84 +1,51 @@
+/*
+ * Allow players to reveal cells
+ * Implement a flagging system for suspected mines
+ * End the game when a mine is revealed
+ * Win the game when all non-mine cells are revealed
+ */
+
 import java.util.*;
 
 public class Game {
 
-    private int n;
-    private int mineCount;
-    private int[][] mineMap;
-    private int[][] gameState;
+    private Board board;
 
     public Game(int size) {
-        n = size;
-        mineCount = size / 9;
-        mineMap = new int[n][n];
-        gameState = new int[n][n];
-        populateMines();
+        board = new Board(size);
     }
 
     public Game(int size, int mineCount) {
-        this.mineCount = mineCount;
-        n = size;
-        mineMap = new int[n][n];
-        gameState = new int[n][n];
-        populateMines();
+        board = new Board(size, mineCount);
     }
 
-    public void populateMines() {
-        List<Integer> mines = new ArrayList<>();
-
-        // Fill list with randomized mines
-        for (int i=0; i<mineCount; i++) {
-            mines.add(-1);
-        }
-        for (int i=0; i<(n*n - mineCount); i++) {
-            mines.add(0);
-        }
-        Collections.shuffle(mines);
-
-        // Populate mineMap
-        for (int i=0; i<mines.size(); i++) {
-            int row = i / n;
-            int col = i % n;
-
-            mineMap[row][col] = mines.get(i);
-        }
-    }
-
-    public void reveal(int row, int col) {
-        if (mineMap[row][col] == 0) {
-            gameState[row][col] = 1;
-        } else {
-            gameState[row][col] = mineMap[row][col];
-        }
+    /* Main game loop */
+    public void play() {
         
-    }
 
-    public int getSize() {
-        return n;
-    }
-
-    private void displayMineMap() {
-        for (int i=0; i < n; i++) {
-            for (int j=0; j < n; j++) {
-                System.out.print(mineMap[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    public void displayGameState() {
-        for (int i=0; i < n; i++) {
-            for (int j=0; j < n; j++) {
-                System.out.print(gameState[i][j] + "  ");
-            }
-            System.out.println();
-        }
     }
 
     public static void main(String[] args) {
-        Game initialState = new Game(9, 10);
+        Scanner scannerObj = new Scanner(System.in);
+        Game game = new Game(9, 10);
         
-        initialState.displayMineMap();
-        // initialState.displayGameState();
+        System.out.println("Welcome to Minesweeper\n");
+        System.out.println("0: uncovered cell; 1: safe cell; -1: mine\n");
+        System.out.println("Enter CTRL + C to exit any time\n");
+
+        
+        // game.displayGameState();
+
+        // System.out.print("\nEnter coords to reveal mine, e.g. 3 2:");
+        // String move = scannerObj.nextLine();
+        // String[] parts = move.split(" ");
+        // int row = Integer.parseInt(parts[0]);
+        // int col = Integer.parseInt(parts[1]);
+
+        // game.reveal(row, col);
+        // game.displayGameState();
+
+        scannerObj.close();
+
     }
 }

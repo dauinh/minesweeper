@@ -1,10 +1,8 @@
-/* 
-
-Create a grid-based board (e.g., 10x10).
-Randomly place mines on the board.
-Calculate numbers for non-mine cells indicating the count of adjacent mines 
-
-*/
+/*
+ * Create a grid-based board (e.g., 10x10)
+ * Randomly place mines on the board
+ * Calculate numbers for non-mine cells indicating the count of adjacent mines 
+ */
 import java.util.*;
 
 public class Board {
@@ -62,7 +60,7 @@ public class Board {
         grid[r][c] = mineCount + 1;
     }
 
-    public int getSize() {
+    private int getSize() {
         return n;
     }
 
