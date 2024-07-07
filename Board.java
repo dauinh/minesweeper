@@ -51,14 +51,18 @@ public class Board {
     }
 
     public void revealAdjacentCells(int r, int c) {
-        if (r < 0 || c < 0 || r >= n || c >= n || grid[r][c].isMine()) return;
-
+        if (r < 0 || c < 0 || r >= n || c >= n || 
+            grid[r][c].isMine() || grid[r][c].isRevealed()) return;
+        
         grid[r][c].reveal();
 
-        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
-        for (int[] d : directions) {
-            revealAdjacentCells(r + d[0], c + d[1]);
-        }
+        if (grid[r][c].getAdjacentMines() == 0) {
+            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
+            for (int[] d : directions) {
+                revealAdjacentCells(r + d[0], c + d[1]);
+            }
+        } return;
+        
     }
 
     private void populateMines() {

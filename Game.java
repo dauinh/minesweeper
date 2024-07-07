@@ -24,16 +24,14 @@ public class Game {
 
     /* Main game loop */
     public void play(int option, int r, int c) {
-        board.displayGameState();
+        board.displayAdjacentMines();
 
         // player reveals cell
         if (option == 1) {
             // mine cell
             if (board.getCell(r, c).isMine()) isEnded = true;
             // safe cell
-            else {
-                board.revealAdjacentCells(r, c);
-            }
+            else board.revealAdjacentCells(r, c);
 
         }
         // player flags cell
@@ -52,7 +50,7 @@ public class Game {
         System.out.println("Enter CTRL + C to exit any time\n");
 
         
-        game.play(1, 5, 5);
+        game.play(1, 8, 8);
 
         // System.out.print("\nEnter coords to reveal mine, e.g. 3 2:");
         // String move = scannerObj.nextLine();
