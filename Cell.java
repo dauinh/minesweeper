@@ -1,21 +1,40 @@
 public class Cell {
-    private boolean isMine;
-    // private int adjacentMines;
-    private boolean isRevealed;
-    private boolean isFlagged;
+    private boolean isMine = false;
+    private int adjacentMines = 0;
+    private boolean isRevealed = false;
+    private boolean isFlagged = false;
 
     public Cell() {}
 
-    private void setMine() {
+    public boolean isMine() {
+        return this.isMine;
+    }
+
+    public void setMine() {
         this.isMine = true;
     }
 
-    private boolean reveal() {
-        this.isRevealed = true;
-        return isMine;
+    public int getAdjacentMines() {
+        return this.adjacentMines;
     }
 
-    private void setFlag() {
-        this.isFlagged = true;
+    public void setAdjacentMines(int n) {
+        this.adjacentMines = n;
+    }
+
+    public boolean isRevealed() {
+        return this.isRevealed;
+    }
+
+    public void reveal() {
+        this.isRevealed = true;
+    }
+
+    public boolean isFlagged() {
+        return this.isFlagged;
+    }
+
+    public void setFlag() {
+        this.isFlagged = !this.isFlagged;
     }
 }

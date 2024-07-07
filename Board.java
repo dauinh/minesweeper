@@ -1,5 +1,5 @@
 /*
- * Create a grid-based board (e.g., 10x10)
+ * Create a grid-based board
  * Randomly place mines on the board
  * Calculate numbers for non-mine cells indicating the count of adjacent mines 
  */
@@ -9,85 +9,146 @@ public class Board {
 
     private int n;
     private int mineCount;
-    private List<Integer> mines;
-    private int[][] grid;
+    private Cell[][] grid;
 
     public Board(int size) {
         n = size;
         mineCount = size / 9;
-        grid = new int[n][n];
-        populateMines();
+        grid = new Cell[n][n];
+        for (int r=0; r<n; r++) {
+            for (int c=0; c<n; c++) {
+                grid[r][c] = new Cell();
+            }
+        }
     }
 
     public Board(int size, int mineCount) {
         this.mineCount = mineCount;
         n = size;
-        grid = new int[n][n];
+        grid = new Cell[n][n];
+        for (int r=0; r<n; r++) {
+            for (int c=0; c<n; c++) {
+                grid[r][c] = new Cell();
+            }
+        }
+    }
+
+    public void initialize() {
         populateMines();
+        calculateAdjacent();
+    }
+
+    public int getSize() {
+        return n;
+    }
+
+    public Cell getCell(int r, int c) {
+        return this.grid[r][c];
+    }
+
+    public void flagCell(int r, int c) {
+        this.grid[r][c].setFlag();
+    }
+
+    public void revealAdjacentCells(int r, int c) {
+        if (r < 0 || c < 0 || r >= n || c >= n || grid[r][c].isMine()) return;
+
+        grid[r][c].reveal();
+
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
+        for (int[] d : directions) {
+            revealAdjacentCells(r + d[0], c + d[1]);
+        }
     }
 
     private void populateMines() {
-        this.mines = new ArrayList<>();
+        List<Integer> mines = new ArrayList<>();
 
         // Fill list with mines as -1 and non-mine as 0
         for (int i=0; i<n*n; i++) {
-            if (i <= mineCount) this.mines.add(-1);
-            else this.mines.add(0);
+            if (i <= mineCount) mines.add(-1);
+            else mines.add(0);
         }
 
         // Shuffle list
         Collections.shuffle(mines);
-    }
 
-    private void calculateAdjacent() {
+        // Add mines to grid
         for (int i=0; i<n*n; i++) {
             int r = i / n;
             int c = i % n;
-            if (this.mines.get(i) == -1) calculateAdjacentHelper(r, c);
+
+            if (mines.get(i) == -1) grid[r][c].setMine();
+        }
+    }
+
+    private void calculateAdjacent() {
+        for (int r=0; r<n; r++) {
+            for (int c=0; c<n; c++) {
+                if (grid[r][c].isMine()) calculateAdjacentHelper(r, c);
+            }
         }
     }
 
     private void calculateAdjacentHelper(int r, int c) {        
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, 1}, {1, -1}};
 
-        for (int[] direction : directions) {
-            int curRow = r + direction[0];
-            int curCol = c + direction[1];
-            if (curRow >= 0 && curCol >= 0 && curRow < n && curCol < n && grid[curRow][curCol] != mineCount + 1) {
-                grid[curRow][curCol] += 1;
+        for (int[] d : directions) {
+            int curRow = r + d[0];
+            int curCol = c + d[1];
+            if (curRow >= 0 && curCol >= 0 && curRow < n && curCol < n && !grid[curRow][curCol].isMine()) {
+                int curMines = grid[curRow][curCol].getAdjacentMines();
+                grid[curRow][curCol].setAdjacentMines(curMines + 1);
             }
         }
-        grid[r][c] = mineCount + 1;
     }
 
-    private int getSize() {
-        return n;
-    }
-
-    private void displayMines() {
-        for (int i=0; i<mines.size(); i++) {
-            if (i % n == 0) System.out.println();
-            System.out.print(mines.get(i) + " ");
+    public void displayMines() {
+        for (int r=0; r<n; r++) {
+            for (int c=0; c<n; c++) {
+                System.out.print(grid[r][c].isMine() + "  ");
+            } System.out.println();
         }
     }
 
-    private void display() {
-        for (int i=0; i < n; i++) {
-            for (int j=0; j < n; j++) {
-                System.out.print(grid[i][j] + "  ");
-            }
-            System.out.println();
+    public void displayAdjacentMines() {
+        for (int r=0; r < n; r++) {
+            for (int c=0; c < n; c++) {
+                System.out.print(grid[r][c].getAdjacentMines() + "  ");
+            } System.out.println();
+        }
+    }
+
+    public void displayGameState() {
+        System.out.print("    ");
+        for (int r=0; r<n; r++) System.out.print(r + " ");
+        System.out.println();
+
+        for (int r=0; r < n; r++) {
+            for (int c=0; c < n; c++) {
+                if (c == 0) System.out.print(r + " | ");
+                if (grid[r][c].isRevealed() && grid[r][c].isMine()) {
+                    System.out.print("X" + " ");
+                } else if (grid[r][c].isRevealed()) {
+                    System.out.print(grid[r][c].getAdjacentMines() + " ");
+                } else if (grid[r][c].isFlagged()) {
+                    System.out.print("f" + " ");
+                } else {
+                    System.out.print("O ");
+                }
+            } System.out.println();
         }
     }
 
     public static void main(String[] args) {
-        Board initialBoard = new Board(9, 10);
+        Board board = new Board(9, 10);
 
         System.out.println("mine field");
-        initialBoard.displayMines();
+        board.initialize();
+        board.displayMines();
 
         System.out.println("\n\ngame");
-        initialBoard.calculateAdjacent();
-        initialBoard.display();
+        board.displayAdjacentMines();
+        board.displayGameState();
     }
 }
