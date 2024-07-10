@@ -35,6 +35,6 @@ public class Cell {
     }
 
     public void flag() {
-        this.isFlagged = !isFlagged;
+        this.isFlagged = !this.isFlagged;
     }
 }

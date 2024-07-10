@@ -24,7 +24,7 @@ public class Game {
 
     /* Main game loop */
     public void play(String option, int r, int c) {
-        if (option == "1") {
+        if (option.equals("1")) {
             // mine cell
             if (board.getCell(r, c).isMine()) {
                 board.getCell(r, c).reveal();
@@ -33,7 +33,7 @@ public class Game {
             // safe cell
             else board.revealAdjacentCells(r, c);
 
-        } else if (option == "2") {
+        } else if (option.equals("2")) {
             board.getCell(r, c).flag();
             System.out.println(board.getCell(r, c).isFlagged());
         }
@@ -51,15 +51,13 @@ public class Game {
         System.out.println();
         game.board.displayGameState();
 
-        // game.play("1", 8, 8);
-
         while (!game.isEnded) {
-            System.out.println("\nChoose following action:\n1. Reveal cell\n2. Flag cell");
-            String option = scannerObj.nextLine();
+            System.out.print("\n1. Reveal cell\n2. Flag cell\nChoose action: ");
+            String option = scannerObj.next();
             option.strip();
 
-            System.out.println("\nEnter cell coords in this format: row,column");
-            String coords = scannerObj.nextLine();
+            System.out.print("\nEnter cell coords in this format row,column: ");
+            String coords = scannerObj.next();
             String[] parts = coords.split(",");
             int row = Integer.parseInt(parts[0]);
             int col = Integer.parseInt(parts[1]);
