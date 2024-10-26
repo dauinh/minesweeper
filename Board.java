@@ -103,6 +103,24 @@ public class Board {
         }
     }
 
+    public int getMineCount() {
+        return mineCount;
+    }
+
+    public boolean evaluateWin() {
+        boolean allMinesFlagged = true;
+        boolean allNonMinesRevealed = true;
+        for (int i=0; i<n*n; i++) {
+            int r = i / n;
+            int c = i % n;
+            // all non-mines are not revealed
+            if (!grid[r][c].isMine() && !grid[r][c].isRevealed()) allNonMinesRevealed = false;
+            // all mines are not flagged
+            else if (grid[r][c].isMine() && !grid[r][c].isFlagged()) allMinesFlagged = false;
+        }
+        return allMinesFlagged && allNonMinesRevealed;
+    }
+
     public void displayMines() {
         for (int r=0; r<n; r++) {
             for (int c=0; c<n; c++) {
